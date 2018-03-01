@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/instance.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        机时统计
+        <small>查看机时使用情况</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li class="active" style="font-size: 18px;">机时统计</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">个人机时统计——各应用详情</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>应用模板名</th>
+                                    <th>应用总消耗机时</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key in bill_dict.keys() %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ key }}</td>
+                                    <td>{{ bill_dict[key] }} 小时</td>
+                                    <td><a href="{{ url_for('machine.detail',app_name=key) }}" class="btn btn-info">查看详情</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-5 col-xs-offset-1" id="app-hours" style="height: 400px"></div>
+            <div class="col-xs-5" id="ins-hours" style="height: 400px"></div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}
+
+
+{% block footer_ext %}
+    <script src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+
+    <script>
+        $(document).ready(function(){
+            load_app_chart();
+            load_instance_chart();
+        });
+    </script>
+
+    <!-- 加载图表的工具函数 -->
+    <script>
+        function load_app_chart() {
+            var chart = echarts.init(document.getElementById('app-hours'));
+            var apps = null, hours = null;
+            
+            $.ajax({
+               type:'get',
+               url:'{{ url_for('machine.bill_app_chart') }}',
+               async: false,
+               success:function (data) {
+                   apps = data['apps'];
+                   hours = data['hours'];
+               },
+               error:function () {
+                   alert('获取失败，请检查网络！');
+               } 
+            });
+
+            var option = {
+                title : {
+                    text: '应用机时消耗图',
+                    subtext: '在每个应用模板上的机时统计(包括已删除的实例)'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : apps
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'小时',
+                        type:'bar',
+                        data: hours,
+                        itemStyle : {
+                            normal:{color:'#ff7f50'}
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }
+
+        function load_instance_chart() {
+            var chart = echarts.init(document.getElementById('ins-hours'));
+            var instances = null, hours = null;
+
+            $.ajax({
+               type:'get',
+               url:'{{ url_for('machine.bill_ins_chart') }}',
+               async: false,
+               success:function (data) {
+                   instances = data['inss'];
+                   hours = data['hours'];
+               },
+               error:function () {
+                   alert('获取失败，请检查网络！');
+               }
+            });
+
+            var option = {
+                title : {
+                    text: '实例机时消耗图',
+                    subtext: '在每个实例上的机时统计(已删除的实例用"deleted"表示)'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : instances
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'小时',
+                        type:'bar',
+                        data: hours,
+                        itemStyle : {
+                            normal:{color:'#ff7f50'}
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        401错误-暂无权限
+        <small>请完善您的个人信息以通过系统认证</small>
+      </h1>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> 您暂无权限进行访问此功能!</h4>
+            请在个人设置里完善个人资料，以等待管理员的审核认证。
+            当您通过审核成为已认证用户时，系统将对您开放所有功能。
+        </div>
+    </section>
+{% endblock %}
+
+{% block footer_ext %}
+{% endblock %}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% if title %}{{ title }}{% endif %}-Deepnex</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ionicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/AdminLTE.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/_all-skins.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body class="hold-transition skin-green layout-top-nav">
+<div class="wrapper">
+
+  <header class="main-header">
+    <nav class="navbar navbar-static-top" role="navigation">
+        <div class="container">
+            <a href="/" class="navbar-brand"><b>Deep</b>Learning</a>
+            <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('admin.login') }}">管理员登录</a></li>
+                <li><a href="#">管理员使用手册</a></li>
+              </ul>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+  {% block content %}
+      <div class="content-wrapper">
+        <div class="container">
+            <div class="login-box" style="width: 450px;">
+                <div class="login-logo">
+                    <a href="#"><b>Deep</b>Learning 管理员登录</a>
+                </div>
+                <div class="login-box-body">
+                    <p class="login-box-msg"></p>
+                    <form action="{{ url_for('admin.login') }}" method="post" data-parsley-validate="">
+                      <div class="form-group has-feedback">
+                        <input name="email" type="email" class="form-control" placeholder="电子邮箱"
+                               data-parsley-required-message="请输入您的登录邮箱" data-parsley-type="email"
+                               data-parsley-maxlength="64" {% if data %}value="{{ data.email }}"{% endif %} required>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        {% if message_e %}
+                            <p class="help-text">{{ message_e }}</p>
+                        {% endif %}
+                      </div>
+                      <div class="form-group has-feedback">
+                        <input name="password" type="password" class="form-control" placeholder="登录密码"
+                               {% if data %}value="{{ data.password }}"{% endif %} data-parsley-type="alphanum"
+                               data-parsley-required-message="请输入您的登录密码" data-parsley-length="[6,32]" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        {% if message_p %}
+                            <p class="help-text">{{ message_p }}</p>
+                        {% endif %}
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-4 pull-right">
+                            <button type="submit" class="btn btn-success btn-block btn-flat">登录</button>
+                          </div>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+  {% endblock %}
+
+</div>
+
+
+<script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/adminlte.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/parsley.js') }}"></script>
+
+</body>
+</html>

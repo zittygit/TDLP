@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% include 'header.html' %}
+    {% block header_ext %}{% endblock %}
+</head>
+
+<body class="hold-transition skin-green sidebar-mini">
+    <div class="wrapper">
+        {% include 'admin/navbar.html' %}
+
+        <div class="content-wrapper">
+            <!-- Main content -->
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% block footer_ext %}{% endblock %}
+    </div>
+</body>
+</html>

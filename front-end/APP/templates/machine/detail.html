@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/instance.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        机时详情
+        <small>应用下实例的机时详情</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li style="font-size: 18px;"><a href="{{ url_for('machine.bill') }}">机时统计</a></li>
+        <li class="active" style="font-size: 18px;">机时详情</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">应用 {{ app_name }} 的实例机时详情列表</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>应用实例名</th>
+                                    <th>当前状态</th>
+                                    <th>创建时间</th>
+                                    <th>实例消耗机时</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ins in app_list %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ ins.name }}</td>
+                                    <td>{% if ins.state == 0%}<span class="label label-success">运行中</span>{% else %}<span class="label label-danger">已删除</span>{% endif %}</td>
+                                    <td>{{ ins.create_time }}</td>
+                                    <td>{{ ins.hours }} 小时</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-pie-chart"></i> 实例机时详情图表</h3>
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="hour-dist" style="height: 400px;">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}
+
+
+{% block footer_ext %}
+    <script src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+
+    <script>
+        $(document).ready(function(){
+            load_chart();
+        });
+    </script>
+
+    <!-- 加载图表的工具函数 -->
+    <script>
+        function load_chart() {
+            var chart = echarts.init(document.getElementById('hour-dist'));
+
+            var inss = null, hours = null, arr = [];
+            $.ajax({
+               type:'get',
+               url:'{{ url_for('machine.detail_dist_chart',app_name=app_name) }}',
+               async: false,
+               success:function (data) {
+                   inss = data['inss'];
+                   hours = data['hours'];
+                   for(var i=0;i<inss.length;i++){
+                       var obj = {};
+                       obj.name = inss[i];
+                       obj.value = hours[i];
+                       arr.push(obj);
+                   }
+               },
+               error:function () {
+                   alert('获取失败，请检查网络！');
+               } 
+            });
+
+            var option = {
+                title : {
+                    text: '{{ app_name }}——实例消耗机时分布图',
+                    subtext: '注意：已被删除的实例归为一类',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: inss
+                },
+                series : [
+                    {
+                        name: '消耗机时',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data: arr,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }
+    </script>
+
+{% endblock %}

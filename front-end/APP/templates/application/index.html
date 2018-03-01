@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/application.css') }}">
+    <link href="//cdn.bootcss.com/bootstrap-select/1.12.1/css/bootstrap-select.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        应用模板<small>点击应用模板，立刻创建实例</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li class="active" style="font-size: 18px;">应用模板</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="app-list" style="margin-top: 20px">
+            {% for app in apps %}
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <div class="app-item">
+                    <div class="app-img">
+                        <a href="#" data-toggle="modal" data-target="#create_modal_{{ app.id }}">
+                            <img src="{{ app.cover_img }}" class="img-responsive">
+                        </a>
+                    </div>
+                    <div class="app-info">
+                        <div class="title">
+                            <a class="link-dark" href="#" data-toggle="modal" data-target="#create_modal_{{ app.id }}">
+                                <strong>{{ app.name }}</strong>
+                            </a>
+                        </div>
+                        <div style="margin: 10px;height: 58px;overflow: hidden">
+                            {{ app.info }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% for app in apps %}
+    <div class="modal fade" id="create_modal_{{ app.id }}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form action="{{ url_for('instance.create',app_id=app.aid) }}" method="post">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">创建实例——{{ app.name }}</h4>
+              </div>
+              <div class="modal-body">
+                  {% if app.param_guide and app.param_guide != "" %}
+                  <div class="form-group form-horizontal row">
+                      <label class="col-sm-2 control-label">参数说明：</label>
+                      <div class="col-sm-10">
+                          {{ app.param_guide }}
+                      </div>
+                  </div><hr>
+                  {% endif %}
+
+                  <div class="form-group form-horizontal row">
+                      <label class="col-sm-2 control-label">实例名：</label>
+                      <div class="col-sm-8">
+                        <input name="name" type="text" class="form-control" value="" placeholder="请输入实例名(仅限字母数字)">
+                      </div>
+                  </div>
+
+                  <div class="form-group form-horizontal row">
+                      <label class="col-sm-2 control-label">CPU：</label>
+                      <select class="selectpicker col-sm-5" name="cpu">
+                            <option value="50">50/1000</option>
+                            <option value="100">100/1000</option>
+                            <option value="200">200/1000</option>
+                            <option value="400">400/1000</option>
+                            <option value="800">800/1000</option>
+                            <option value="1000">1000/1000</option>
+                            <option value="2000">2000/1000</option>
+                            <option value="3000">3000/1000</option>
+                            <option value="4000">4000/1000</option>
+                      </select> 核
+                  </div>
+
+                  <div class="form-group form-horizontal row">
+                      <label class="col-sm-2 control-label">内存：</label>
+                      <select class="selectpicker col-sm-5" name="memory">
+                            <option value="128">128</option>
+                            <option value="256">256</option>
+                            <option value="512">512</option>
+                            <option value="1024">1024</option>
+                            <option value="2048">2048</option>
+                            <option value="4096">4096</option>
+                      </select> MB
+                  </div>
+
+                  {% for param_dict in app.param_list %}
+                  <div class="form-group form-horizontal row">
+                      <label class="col-sm-2 control-label">{{ param_dict.name }}：</label>
+                      <div class="col-sm-8">
+                        <input name="{{ param_dict.name }}" type="text" class="form-control" value="" placeholder="{{ param_dict.note }}">
+                      </div>
+                  </div>
+                  {% endfor %}
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary">提交</button>
+              </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal -->
+    {% endfor %}
+
+
+{% endblock %}
+
+
+{% block footer_ext %}
+{% endblock %}

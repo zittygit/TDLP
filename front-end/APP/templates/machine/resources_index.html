@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+    <style>
+        #myTable td,th{
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        资源管理
+        <small>查看资源配额以及使用情况</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li class="active" style="font-size: 18px;">资源管理</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">资源配额管理</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>资源类型</th>
+                                    <th>资源单位</th>
+                                    <th>当前已用配额</th>
+                                    <th>分配总配额</th>
+                                    <th>计费标准</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CPU</td>
+                                    <td>千分之一核</td>
+                                    <td>10 核</td>
+                                    <td>24 核</td>
+                                    <td>￥<b>20</b>/(核·月)</td>
+                                    <td><a class="btn btn-primary">申请 CPU 配额</a></td>
+                                </tr>
+                                <tr>
+                                    <td>内存</td>
+                                    <td>兆(M)</td>
+                                    <td>1024 M</td>
+                                    <td>2048 M</td>
+                                    <td>￥<b>0.01</b>/(M·月)</td>
+                                    <td><a class="btn btn-primary">申请内存配额</a></td>
+                                </tr>
+                                <tr>
+                                    <td>GPU</td>
+                                    <td>千分之一核</td>
+                                    <td>10 核</td>
+                                    <td>20 核</td>
+                                    <td>￥<b>20</b>/(核·月)</td>
+                                    <td><a class="btn btn-primary">申请 GPU 配额</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">资源配额使用详情</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>实例名</th>
+                                    <th>所属应用模板</th>
+                                    <th>CPU使用量(千分之一核)</th>
+                                    <th>内存使用量(兆)</th>
+                                    <th>GPU使用量(千分之一核)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in instances %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ i.instancename }}</td>
+                                    <td>{{ i.appname }}</td>
+                                    <td>{{ i.cpu }}</td>
+                                    <td>{{ i.memory }}</td>
+                                    <td>——</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}
+
+
+{% block footer_ext %}
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block header_ext %}
+    <script src="{{ url_for('static', filename='js/show_invalid_info.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        模板封面
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('admin.index') }}"><i class="fa fa-tags"></i>主控制台</a></li>
+        <li style="font-size: 18px;"><a href="{{ url_for('admin.application') }}"><i class="fa fa-tags"></i>模板管理</a></li>
+        <li class="active" style="font-size: 18px;">模板封面</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid container">
+        <div class="row" style="margin-top: 10px;">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">上传模板封面图片——{{ app.name }}</h3>
+                </div>
+
+                <form class="form-horizontal" action="{{ url_for('admin.application_pic', aid=app.id) }}" method="post"
+                      enctype="multipart/form-data" data-parsley-validate="">
+                    <div class="box-body">
+                        <div class="form-group clearfix">
+                            <div class="col-md-offset-2 col-md-8 controls">
+                                <img id="user-avatar" src="{{ app.cover_img }}" style="height: 262px;width: 383px;">
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <div class="col-md-offset-2 col-md-8 controls">
+                                <input id="user-avatar-field" class="pic-upload" name="file" accept="image/bmp,image/jpeg,image/png" type="file"
+                                       data-parsley-max-file-size="2048" data-parsley-required-message="请选择要上传的图片" required="required">
+                                <p class="help-block">你可以上传 jpg, bmp, png 格式的图片，不超过2M</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-info pull-right">保存</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block footer_ext %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#user-avatar-field').change("#user-avatar", preview_picture);
+        });
+    </script>
+{% endblock %}

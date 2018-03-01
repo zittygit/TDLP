@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/article.css') }}">
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        新闻资讯详情
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li style="font-size: 18px;"><a href="{{ url_for('article.news') }}">新闻资讯</a></li>
+        <li class="active" style="font-size: 18px;">资讯详情</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">如何进行创建实例？</h3>
+                      <div class="box-tools pull-right">
+                         <a href="{{ url_for('article.help') }}" class="btn btn-success btn-sm">返回帮助中心</a>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                        <p>首先需要注册登录账号，并完善资料进行认证</p>
+                        <p>等待管理员审核通过后，您将获得一定配额的资源，之后就可以在“我的实例”菜单里创建您的实例了！</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}
+
+{% block footer_ext %}
+{% endblock %}

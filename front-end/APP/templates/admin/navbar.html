@@ -1,0 +1,191 @@
+<!-- Main Header -->
+<header class="main-header">
+
+<!-- Logo -->
+<a href="#" class="logo">
+  <!-- mini logo for sidebar mini 50x50 pixels -->
+  <span class="logo-mini">TDLP</span>
+  <!-- logo for regular state and mobile devices -->
+  <span class="logo-lg">TDLP 管理控制台</span>
+</a>
+
+<!-- Header Navbar -->
+<nav class="navbar navbar-static-top" role="navigation">
+  <!-- Sidebar toggle button-->
+  <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+    <span class="sr-only">Toggle navigation</span>
+  </a>
+  <!-- Navbar Right Menu -->
+  <div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+      {% if current_user.permissions == 0 %}
+          <li class="dropdown messages-menu">
+             <a href="{{ url_for('main.index') }}">
+                 <i class="fa fa-windows"></i> 退出控制台
+             </a>
+          </li>
+      {% endif %}
+
+      <!-- User Account Menu -->
+      <li class="dropdown user user-menu">
+        <!-- Menu Toggle Button -->
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <!-- The user image in the navbar-->
+          <img src="{{ current_user.avatar_url }}" class="user-image" alt="User Image">
+          <!-- hidden-xs hides the username on small devices so only the image appears. -->
+          <span class="hidden-xs">{{ current_user.username }}</span>
+        </a>
+        <ul class="dropdown-menu">
+          <!-- The user image in the menu -->
+          <li class="user-header">
+            <img src="{{ current_user.avatar_url }}" class="img-circle" alt="User Image">
+
+            <p>
+              {{ current_user.username }}
+              <small>注册时间：{{ current_user.date_joined }}</small>
+            </p>
+          </li>
+
+          <!-- Menu Footer-->
+          <li class="user-footer">
+{#            <div class="pull-left">#}
+{#              <a href="#" class="btn btn-default btn-flat">系统设置</a>#}
+{#            </div>#}
+            <div class="pull-right">
+              <a href="{{ url_for('user.logout') }}" class="btn btn-default btn-flat">登出</a>
+            </div>
+          </li>
+        </ul>
+      </li>
+{#          <!-- Control Sidebar Toggle Button -->#}
+{#          <li>#}
+{#            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>#}
+{#          </li>#}
+    </ul>
+  </div>
+</nav>
+</header>
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+
+<!-- sidebar: style can be found in sidebar.less -->
+<section class="sidebar">
+
+  <!-- Sidebar user panel (optional) -->
+  <div class="user-panel">
+    <div class="pull-left image">
+      <img src="{{ current_user.avatar_url }}" class="img-circle" alt="User Image">
+    </div>
+    <div class="pull-left info">
+      <p>{{ current_user.username }}</p>
+      <!-- Status -->
+      <a href="#"><i class="fa fa-circle text-success"></i> 系统管理员</a>
+    </div>
+  </div>
+
+  <!-- Sidebar Menu -->
+  <ul class="sidebar-menu" data-widget="tree">
+    <li class="header">管理员菜单</li>
+    <li><a href="{{ url_for('admin.index') }}"><i class="fa fa-home"></i> <span>主控制台</span></a></li>
+    <li><a href="{{ url_for('admin.user') }}"><i class="fa fa-user"></i> <span>用户管理</span></a></li>
+    <li><a href="{{ url_for('admin.instance') }}"><i class="fa fa-cubes"></i> <span>实例管理</span></a></li>
+    <li><a href="{{ url_for('admin.application') }}"><i class="fa fa-steam-square"></i> <span>模板管理</span></a></li>
+    <li><a href="{{ url_for('admin.notice') }}"><i class="fa fa-book"></i> <span>公告管理</span></a></li>
+    <li><a href="{{ url_for('admin.news') }}"><i class="fa fa-align-left"></i> <span>新闻管理</span></a></li>
+{#    <li><a href="#"><i class="fa fa-paper-plane"></i> <span>帮助中心管理</span></a></li>#}
+
+
+{#        <li class="treeview">#}
+{#          <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>#}
+{#            <span class="pull-right-container">#}
+{#                <i class="fa fa-angle-left pull-right"></i>#}
+{#              </span>#}
+{#          </a>#}
+{#          <ul class="treeview-menu">#}
+{#            <li><a href="#">Link in level 2</a></li>#}
+{#            <li><a href="#">Link in level 2</a></li>#}
+{#          </ul>#}
+{#        </li>#}
+  </ul>
+  <!-- /.sidebar-menu -->
+</section>
+<!-- /.sidebar -->
+</aside>
+
+
+{#  <!-- Control Sidebar -->#}
+{#  <aside class="control-sidebar control-sidebar-dark">#}
+{#    <!-- Create the tabs -->#}
+{#    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">#}
+{#      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>#}
+{#      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>#}
+{#    </ul>#}
+{#    <!-- Tab panes -->#}
+{#    <div class="tab-content">#}
+{#      <!-- Home tab content -->#}
+{#      <div class="tab-pane active" id="control-sidebar-home-tab">#}
+{#        <h3 class="control-sidebar-heading">Recent Activity</h3>#}
+{#        <ul class="control-sidebar-menu">#}
+{#          <li>#}
+{#            <a href="javascript:;">#}
+{#              <i class="menu-icon fa fa-birthday-cake bg-red"></i>#}
+{##}
+{#              <div class="menu-info">#}
+{#                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>#}
+{##}
+{#                <p>Will be 23 on April 24th</p>#}
+{#              </div>#}
+{#            </a>#}
+{#          </li>#}
+{#        </ul>#}
+{#        <!-- /.control-sidebar-menu -->#}
+{##}
+{#        <h3 class="control-sidebar-heading">Tasks Progress</h3>#}
+{#        <ul class="control-sidebar-menu">#}
+{#          <li>#}
+{#            <a href="javascript:;">#}
+{#              <h4 class="control-sidebar-subheading">#}
+{#                Custom Template Design#}
+{#                <span class="pull-right-container">#}
+{#                    <span class="label label-danger pull-right">70%</span>#}
+{#                  </span>#}
+{#              </h4>#}
+{##}
+{#              <div class="progress progress-xxs">#}
+{#                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>#}
+{#              </div>#}
+{#            </a>#}
+{#          </li>#}
+{#        </ul>#}
+{#        <!-- /.control-sidebar-menu -->#}
+{##}
+{#      </div>#}
+{#      <!-- /.tab-pane -->#}
+{#      <!-- Stats tab content -->#}
+{#      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>#}
+{#      <!-- /.tab-pane -->#}
+{#      <!-- Settings tab content -->#}
+{#      <div class="tab-pane" id="control-sidebar-settings-tab">#}
+{#        <form method="post">#}
+{#          <h3 class="control-sidebar-heading">General Settings</h3>#}
+{##}
+{#          <div class="form-group">#}
+{#            <label class="control-sidebar-subheading">#}
+{#              Report panel usage#}
+{#              <input type="checkbox" class="pull-right" checked>#}
+{#            </label>#}
+{##}
+{#            <p>#}
+{#              Some information about this general settings option#}
+{#            </p>#}
+{#          </div>#}
+{#          <!-- /.form-group -->#}
+{#        </form>#}
+{#      </div>#}
+{#      <!-- /.tab-pane -->#}
+{#    </div>#}
+{#  </aside>#}
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+  immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>

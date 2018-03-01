@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/instance.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        我的实例
+        <small>查看与管理实例</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li class="active" style="font-size: 18px;">我的实例</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-10 col-xs-offset-1">
+                {% if message == 'deleted' %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-check"></i> 删除成功!</h4>
+                    </div>
+                {% endif %}
+                {% if message == 'created' %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-check"></i> 创建实例成功!</h4>
+                    </div>
+                {% endif %}
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">应用实例列表</h3>
+
+                      <div class="box-tools pull-right">
+                        <a href="{{ url_for('application.index') }}" class="btn btn-primary btn-sm">创建新实例</a>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>实例名</th>
+                                    <th>应用模板名</th>
+                                    <th>运行状态</th>
+                                    <th>创建时间</th>
+                                    <th>已运行时间</th>
+                                    <th>创建用户</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in instances %}
+                                {% if i.state == 0 %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ i.instancename }}</td>
+                                    <td>{{ i.appname }}</td>
+                                    <td>{% if i.state == 0 %}<span class="label label-success">运行中</span>{% else %}<span class="label label-danger">已删除</span>{% endif %}</td>
+                                    <td>{{ i.createtime }}</td>
+                                    <td>{{ i.createtime | compute_hours }} 小时</td>
+                                    <td>{{ i.username }}</td>
+                                    <td>
+                                        <a href="{{ url_for('instance.detail',iid=i.iid) }}" class="btn btn-sm btn-info">详细信息</a>
+                                        {% if i.state == 0 %}
+                                        <a class="btn btn-sm btn-danger" data-id="{{ i.iid }}" data-toggle="modal" data-target="#modal-delete">删除实例</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+    <!-- modal-dialog -->
+    <div class="modal modal-danger fade" id="modal-delete" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">删除</h4>
+          </div>
+          <div class="modal-body">
+            <p>删除后将不可恢复，是否确定删除？</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">关闭</button>
+            <a id="del-confirm" href="javascript:void()" type="button" class="btn btn-outline">删除</a>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+{% endblock %}
+
+{% block footer_ext %}
+    <script>
+        $(document).ready(function(){
+            $('#myTable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Chinese.json"
+                },
+                searching: false,
+                ordering: false
+            });
+
+            var iid;
+            $("#modal-delete").on("show.bs.modal", function(e) {
+                // 这里的btn就是触发元素，即你点击的删除按钮
+                var btn = $(e.relatedTarget);
+                // do your work
+                iid = btn.data("id");
+            });
+            $("#del-confirm").click(function () {
+                $.ajax({
+                    url: "{{ url_for('instance.delete')}}",
+                    type: "post",
+                    data:{'iid':iid},
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function () {
+                        alert('删除失败')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

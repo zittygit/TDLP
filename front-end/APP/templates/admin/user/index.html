@@ -1,0 +1,91 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/article.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        用户管理
+        <small>认证与管理用户信息</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('admin.index') }}"><i class="fa fa-tags"></i>主控制台</a></li>
+        <li class="active" style="font-size: 18px;">用户管理</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">用户列表</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped table-bordered" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>电子邮箱</th>
+                                    <th>用户名</th>
+                                    <th>真实姓名</th>
+                                    <th>手机号</th>
+                                    <th>地址</th>
+                                    <th>当前状态</th>
+                                    <th>注册时间</th>
+                                    <th>审核</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in users %}
+                                <tr>
+                                    <td>{{ u.id }}</td>
+                                    <td>{{ u.email }}</td>
+                                    <td>{{ u.username }}</td>
+                                    <td>{{ u.real_name }}</td>
+                                    <td>{{ u.phone }}</td>
+                                    <td>{{ u.address }}</td>
+                                    <td>
+                                        {% if u.is_auth != 1 %}
+                                            <span class="label label-danger">未认证</span>
+                                        {% else %}
+                                            <span class="label label-success">通过认证</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ u.date_joined }}</td>
+                                    <td>
+                                        {% if u.is_auth !=1 %}
+                                            <a href="{{ url_for('admin.user_auth',uid=u.id) }}"><i class="fa fa-check-square-o"></i> 通过认证</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}
+
+{% block footer_ext %}
+    <script>
+        $(document).ready(function(){
+            $('#myTable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Chinese.json"
+                }
+            });
+        });
+    </script>
+{% endblock %}

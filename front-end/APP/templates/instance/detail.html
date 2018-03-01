@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block header_ext %}
+
+{% endblock %}
+
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        实例详情
+        <small>实例详情与实例业务参数</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('main.index') }}"><i class="fa fa-tags"></i>主页</a></li>
+        <li style="font-size: 18px;"><a href="{{ url_for('instance.index') }}">我的实例</a></li>
+        <li class="active" style="font-size: 18px;">实例详情</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid container">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-9">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">实例基本参数</h3>
+                      <div class="box-tools pull-right">
+                        <a href="{{ url_for('instance.index') }}" class="btn btn-info btn-sm">返回实例列表</a>
+                      </div>
+                    </div>
+
+                    <div class="box-body">
+                        <table class="table table-bordered dataTable">
+                            <tbody>
+                                <tr>
+                                    <th>实例ID</th>
+                                    <td>{{ instance.iid }}</td>
+                                    <th>实例名</th>
+                                    <td>{{ instance.instancename }}</td>
+                                </tr>
+                                <tr>
+                                    <th>应用模板ID</th>
+                                    <td>{{ instance.aid }}</td>
+                                    <th>应用模板名</th>
+                                    <td>{{ instance.appname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>所属用户ID</th>
+                                    <td>{{ instance.uid }}</td>
+                                    <th>所属用户名</th>
+                                    <td>{{ instance.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>创建时间</th>
+                                    <td>{{ instance.createtime }}</td>
+                                    <th>结束时间</th>
+                                    <td>{{ instance.deletetime }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-9">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">实例配置参数</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <table class="table table-bordered dataTable">
+                            <tbody>
+                                {% if param.nodes %}
+                                <tr>
+                                    <th>节点数</th>
+                                    <td>{{ param.nodes }} 个</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>节点CPU数量</th>
+                                    <td>({{ param.cpu }} / 1000) 核</td>
+                                    <th>节点内存大小</th>
+                                    <td>{{ param.memory }} M</td>
+                                </tr>
+                                <tr>
+                                    {% for p in proxys %}
+                                    <th>{{ p.proxyname }}</th>
+                                    <td><a href="{{ p.proxyurl }}" target="_blank">{{ p.proxyurl }}</a></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <th>开始时间</th>
+                                    <td>{{ config.starttime }}</td>
+                                    <th>结束时间</th>
+                                    <td>{{ config.endtime }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block footer_ext %}
+
+<script src="{{ url_for('static',filename='js/jquery.cookie.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        set_login_cookie();
+    });
+
+    /*获取并设置登录API后台的cookies*/
+    function set_login_cookie() {
+        $.ajax({
+            url: "{{ url_for('instance.get_cookie') }}",
+            type: "get",
+            success: function (data) {
+                $.cookie('kubernetes_token',data['kubernetes_token'],{path:'/'});
+            },
+            error: function () {
+                alert('获取API登录的cookie失败！');
+            }
+        });
+    }
+
+</script>
+{% endblock %}

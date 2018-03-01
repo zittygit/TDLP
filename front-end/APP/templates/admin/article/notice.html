@@ -1,0 +1,120 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block header_ext %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/article.css') }}">
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        公告管理
+        <small>创建与编辑系统公告</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li style="font-size: 18px;"><a href="{{ url_for('admin.index') }}"><i class="fa fa-tags"></i>主控制台</a></li>
+        <li class="active" style="font-size: 18px;">系统公告</li>
+      </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">系统公告管理列表</h3>
+                      <div class="box-tools pull-right">
+                        <a href="{{ url_for('admin.notice_create') }}" class="btn btn-success btn-sm">创建公告</a>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped dataTable" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th width="5%">序号</th>
+                                    <th>标题</th>
+                                    <th><i class="fa fa-user"></i> 发布者</th>
+                                    <th><i class="fa fa-eye"></i> 浏览数</th>
+                                    <th><span class="glyphicon glyphicon-time"></span> 发布时间</th>
+                                    <th><i class="fa fa-cog"></i> 操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for n in notice_list %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ n.title }}</td>
+                                    <td>{{ n.poster }}</td>
+                                    <td><span class="label label-success"> {{ n.visitNum }}</span></td>
+                                    <td>{{ n.updatedTime }}</td>
+                                    <td><a href="{{ url_for('admin.notice_edit',nid=n.id) }}">编辑</a> | <a class="delete" href="javascript:void();" data-id="{{ n.id }}" data-toggle="modal" data-target="#modal-delete">删除</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+    <!-- modal-dialog -->
+    <div class="modal modal-danger fade" id="modal-delete" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">删除</h4>
+          </div>
+          <div class="modal-body">
+            <p>删除后将不可恢复，是否确定删除？</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">关闭</button>
+            <a id="del-confirm" href="javascript:void();" type="button" class="btn btn-outline">删除</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block footer_ext %}
+    <script>
+        $(document).ready(function(){
+            $('#myTable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Chinese.json"
+                },
+                ordering: false
+            });
+
+            var nid = null;
+            $(".delete").click(function(){
+                nid = $(this).data('id');
+            });
+            $("#del-confirm").click(function(){
+                $.ajax({
+                    type: "post",
+                    url: "{{ url_for('admin.notice_delete') }}",
+                    data: {
+                        nid:nid
+                    },
+                    async: false,
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+
+
+
+    </script>
+{% endblock %}

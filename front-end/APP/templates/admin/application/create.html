@@ -1,0 +1,202 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block header_ext %}
+    <script src="{{ url_for('static',filename='js/parsley.js') }}"></script>
+    <link href="//cdn.bootcss.com/bootstrap-select/1.12.1/css/bootstrap-select.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>
+            应用模板管理
+            <small>查询、编辑或删除应用模板</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li style="font-size: 18px;"><a href="{{ url_for('admin.index') }}"><i class="fa fa-tags"></i>主控制台</a></li>
+            <li class="active" style="font-size: 18px;">应用模板管理</li>
+        </ol>
+    </section>
+
+    <section class="content container-fluid">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="box box-success">
+                    <div class="box-header">
+                      <h3 class="box-title">新建模板</h3>
+                        <div class="box-tools pull-right">
+                            <a href="{{ url_for('admin.application') }}" class="btn btn-success btn-sm">返回模板列表</a>
+                        </div>
+                    </div>
+                    <div class="box-body pad">
+                        <h4>模板添加说明</h4><hr>
+                        <div id="note" style="margin: 8px; padding: 5px;">
+                            <p>新建模板时需要注意以下两点：</p>
+                            <p>1.要求输入中文的输入框是用于本系统前端的用户可见的数据</p>
+                            <p>2.要求输入英文的输入框是需要发送到kubernates端保存的数据</p>
+                        </div>
+                      <form action="#" method="post" data-parsley-validate="">
+                          <h4>基本信息设置</h4><hr>
+                          <div class="form-group row">
+                              <div class="col-md-4">
+                                <label class="control-label">模板中文名称(前端):</label>
+                                <input name="name_zh" type="text" class="form-control" style="max-width: 300px;"
+                                       placeholder="请输入模板中文名" value="" data-parsley-maxlength="30" required>
+                              </div>
+                              <div class="col-md-4 col-md-offset-1">
+                                <label class="control-label">模板英文名称(kubernates端):</label>
+                                <input name="name_en" type="text" class="form-control" style="max-width: 300px;"
+                                       placeholder="请输入模板英文名" value="" data-parsley-maxlength="30" data-parsley-type="alphanum" required>
+                              </div>
+                          </div>
+
+                          <div class="form-group row">
+                              <div class="col-md-4">
+                                <label class="control-label">模板中文简介(前端):</label>
+                                <input name="info_zh" type="text" class="form-control" style="max-width: 600px;"
+                                       placeholder="请输入模板中文简介,不超过30字" value="" data-parsley-maxlength="50" required>
+                              </div>
+                              <div class="col-md-4 col-md-offset-1">
+                                <label class="control-label">模板英文简介(kubernates端):</label>
+                                <input name="info_en" type="text" class="form-control" style="max-width: 600px;"
+                                       placeholder="请输入模板英文简介" value="" data-parsley-maxlength="50" required>
+                              </div>
+                          </div>
+
+                          <div class="form-group">
+                              <label class="control-label">模板路径(kubernates端):</label>
+                              <input name="path" type="text" class="form-control" style="max-width: 500px;"
+                                   placeholder="请输入模板在后台的英文目录路径" value="" data-parsley-maxlength="40" required>
+                          </div>
+
+                          <h4 style="margin-top: 40px;">自定义参数设置</h4><hr>
+
+                          <div class="form-group">
+                              <label class="control-label">参数说明(前端):</label>
+                              <input name="param_guide" type="text" class="form-control" style="max-width: 1000px;"
+                                   placeholder="请输入用户填写自定义参数时的总体说明" value="" data-parsley-maxlength="100" required>
+                          </div>
+
+                          <!-- 自定义预设参数设置为最多5个 -->
+                        <div class="form-group">
+                            <label>自定义参数个数</label>：
+                            <select class="selectpicker col-md-1" name="param-select" id="param-select">
+                                <option onclick="show_custom_param(0)" value="0">0</option>
+                                <option onclick="show_custom_param(1)" value="1">1</option>
+                                <option onclick="show_custom_param(2)" value="2">2</option>
+                                <option onclick="show_custom_param(3)" value="3">3</option>
+                                <option onclick="show_custom_param(4)" value="4">4</option>
+                                <option onclick="show_custom_param(5)" value="5">5</option>
+                            </select> 个
+                            <p style="margin-top: 15px;">注意：模板参数默认已包括<b>CPU</b>与<b>内存</b>，请<b>勿</b>在自定义参数中增加<b>CPU</b>与<b>内存</b>的参数。且最多可设置五个模板参数。</p>
+                        </div>
+                        <div class="form-group" id="param">
+                            <div class="row" style="margin-bottom: 15px">
+                                <div class="col-md-3">参数名1：<input class="form-control" name="param_name_1" type="text" placeholder="请输入以字母与数字组成的变量名"></div>
+                                <div class="col-md-4">参数1描述：<input class="form-control" name="param_note_1" type="text" placeholder="请输入该参数所代表的意义与建议取值范围"></div>
+                                <div class="col-md-2">参数类型：
+                                    <select class="selectpicker" name="param_type_1">
+                                        <option value="int">int</option>
+                                        <option value="double">double</option>
+                                        <option value="varchar">varchar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px">
+                                <div class="col-md-3">参数名2：<input class="form-control" name="param_name_2" type="text" placeholder="请输入以字母与数字组成的变量名"></div>
+                                <div class="col-md-4">参数2描述：<input class="form-control" name="param_note_2" type="text" placeholder="请输入该参数所代表的意义与建议取值范围"></div>
+                                <div class="col-md-2">参数类型：
+                                    <select class="selectpicker" name="param_type_2">
+                                        <option value="int">int</option>
+                                        <option value="double">double</option>
+                                        <option value="varchar">varchar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px">
+                                <div class="col-md-3">参数名3：<input class="form-control" name="param_name_3" type="text" placeholder="请输入以字母与数字组成的变量名"></div>
+                                <div class="col-md-4">参数3描述：<input class="form-control" name="param_note_3" type="text" placeholder="请输入该参数所代表的意义与建议取值范围"></div>
+                                <div class="col-md-2">参数类型：
+                                    <select class="selectpicker" name="param_type_3">
+                                        <option value="int">int</option>
+                                        <option value="double">double</option>
+                                        <option value="varchar">varchar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px">
+                                <div class="col-md-3">参数名4：<input class="form-control" name="param_name_4" type="text" placeholder="请输入以字母与数字组成的变量名"></div>
+                                <div class="col-md-4">参数4描述：<input class="form-control" name="param_note_4" type="text" placeholder="请输入该参数所代表的意义与建议取值范围"></div>
+                                <div class="col-md-2">参数类型：
+                                    <select class="selectpicker" name="param_type_4">
+                                        <option value="int">int</option>
+                                        <option value="double">double</option>
+                                        <option value="varchar">varchar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px">
+                                <div class="col-md-3">参数名5：<input class="form-control" name="param_name_5" type="text" placeholder="请输入以字母与数字组成的变量名"></div>
+                                <div class="col-md-4">参数5描述：<input class="form-control" name="param_note_5" type="text" placeholder="请输入该参数所代表的意义与建议取值范围"></div>
+                                <div class="col-md-2">参数类型：
+                                    <select class="selectpicker" name="param_type_5">
+                                        <option value="int">int</option>
+                                        <option value="double">double</option>
+                                        <option value="varchar">varchar</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                          <div class="form-group">
+                              <div class="pull-right">
+                                  <input type="submit" class="btn btn-success" value="提交">
+                              </div>
+                          </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block footer_ext %}
+    <script>
+        // 展开/折叠 新建模板说明
+        function show_note() {
+            $("#note").toggle(500);
+        }
+
+        // 此处初始化评测的预设自定义参数
+        $(document).ready(function(){
+
+            // 绑定选择参数个数的事件
+            $('#param-select').change(function(){
+                show_custom_param($(this).children('option:selected').val());
+            });
+
+            // 初始化预设参数
+            var len = $("#param").children().length;
+            for(var i=0;i<len;i++){
+                $("#param").children().eq(i).hide();
+            }
+
+        });
+
+        function show_custom_param(n) {
+            var len = $("#param").children().length;
+            for(var i=0;i<n;i++){
+                $("#param").children().eq(i).show(200);
+            }
+            for(i=n;i<len;i++){
+                $("#param").children().eq(i).hide(200);
+            }
+        }
+    </script>
+{% endblock %}
