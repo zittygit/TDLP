@@ -1,0 +1,111 @@
+{% extends "home.html" %}
+
+{% block sidebar %}
+<li class="nav-item">
+    <a href="/home/" class="nav-link">
+        <i class="icon-home"></i>
+        <span class="title">App Status</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/workspace/" class="nav-link">
+        <i class="icon-notebook"></i>
+        <span class="title">Workspace</span>
+    </a>
+</li>
+<li class="nav-item start active open">
+    <a href="/apps/" class="nav-link">
+        <i class="icon-note"></i>
+        <span class="title">Create App</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/images/" class="nav-link">
+        <i class="icon-picture"></i>
+        <span class="title">Image Management</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/usage/" class="nav-link">
+        <i class="icon-speedometer"></i>
+        <span class="title">System Usage</span>
+    </a>
+</li>
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class = "page-title"></h1>
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <form role="form" data-toggle="validator" method="post" action="/app_manage" class="form-horizontal">
+                        {% csrf_token %}
+                        {% if message %}
+                            <div class="alert alert-danger">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="appname">App Name</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="appname" name="appname"
+                                       placeholder="Please input the application name" required>
+                            </div>
+                        </div>
+                        {% comment %}
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="token">App Token (optional)</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="token" name="token"
+                                       placeholder="You can use a token to encrypt your application">
+                            </div>
+                        </div>
+                        {% endcomment %}
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="image">App Image</label>
+                            <div class="col-xs-10">
+                                <select class="form-control" id="image" name="image">
+                                    {% for image in images.user_images %}
+                                        <option value="{{ image.name }}">{{ image.name }}</option>
+                                    {% endfor %}
+                                    {% for image in images.public_images %}
+                                        <option value="{{ image.name }}">{{ image.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="gpu">No. of GPU</label>
+                            <div class="col-xs-10">
+                                <input type="number" class="form-control" id="gpu" name="gpu" min="0" max="{{gpu}}" value="{{gpu}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="cpu">No. of CPU</label>
+                            <div class="col-xs-10">
+                                <input type="number" class="form-control" id="cpu" name="cpu" min="1" max="{{cpu}}" value="{{cpu}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="mem">Max Memory (MB)</label>
+                            <div class="col-xs-10">
+                                <input type="number" class="form-control" id="mem" name="mem"  max="{{mem}}" value="{{mem}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 col-form-label" for="status">App Status</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="status" name="status" value="New" disabled>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-success" name="action" value="Clear" />
+                        <input type="submit" class="btn btn-primary" name="action" value="Create" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

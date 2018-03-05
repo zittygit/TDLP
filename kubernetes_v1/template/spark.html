@@ -1,0 +1,108 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Spark集群创建向导</title>
+<link rel="stylesheet" type="text/css" href="/css/main.css"/>
+<style type="text/css">
+#wizard {border:5px solid #789;font-size:12px;height:400px;margin:20px auto;width:570px;overflow:hidden;position:relative;-moz-border-radius:5px;-webkit-border-radius:5px;}
+#wizard .items{width:20000px; clear:both; position:absolute;}
+#wizard .right{float:right;}
+#wizard #status{height:35px;background:#123;padding-left:25px !important;}
+#status li{float:left;color:#fff;padding:10px 30px;}
+#status li.active{background-color:#369;font-weight:normal;}
+.input{width:240px; height:18px; margin:10px auto; line-height:20px; border:1px solid #d3d3d3; padding:2px}
+.page{padding:20px 30px;width:500px;float:left;}
+.page h3{height:42px; font-size:16px; border-bottom:1px dotted #ccc; margin-bottom:20px; padding-bottom:5px}
+.page h3 em{font-size:12px; font-weight:500; font-style:normal}
+.page p{line-height:24px;}
+.page p label{font-size:14px; display:block;}
+.btn_nav{height:36px; line-height:36px; margin:20px auto;}
+.prev,.next{width:100px; height:32px; line-height:32px; repeat-x bottom; border:1px solid #d3d3d3; cursor:pointer}
+</style>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/scrollable.js"></script>
+</head>
+<body>
+<div id="main">
+	<h2 class="top_title">Spark集群创建向导</h2>
+	<form action="#" method="post">
+		<div id="wizard">
+			<ul id="status">
+				<li class="active"><strong>1.</strong>请选择集群规模</li>
+				<li><strong>2.</strong>请选择硬件资源</li>
+				<li><strong>3.</strong>完成</li>
+			</ul>
+			<div class="items">
+				<div class="page">
+                        		<h3>创建一个Spark集群<br/><em>请填写您要创建的集群的相关信息。</em></h3>
+					<p><label>集群名称：</label><input type="text" class="input" id="service_name" name="service_name" /></p>
+					<p><label>集群规模：</label><input type="text" class="input" id="scale" name="scale" />节点</p>
+					<div class="btn_nav">
+						<input type="button" class="next right" value="下一步&raquo;" />
+					</div>
+				</div>
+				<div class="page">
+					<h3>填写硬件资源需求<br/><em>请选择每个worker节点所需要的CPU和内存</em></h3>
+					<p><label>CPU：</label><input type="text" class="input" name="cpu" id="cpu"/></p>
+					<p><label>内存：</label><input type="text" class="input" name="memory" id="memory"/></p>
+					<div class="btn_nav">
+						<input type="button" class="prev" style="float:left" value="&laquo;上一步" />
+						<input type="button" class="next right" value="下一步&raquo;" />
+					</div>
+				</div>
+				<div class="page">
+					<h3>提交创建请求<br/><em>点击确定创建。</em></h3>
+					<p>请点击“确定”按钮提交创建。</p>
+					<br/>
+					<br/>
+					<br/>
+					<div class="btn_nav">
+						<input type="button" class="prev" style="float:left" value="&laquo;上一步" />
+						<input type="button" class="next right" id="sub" value="确定" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form><br />
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$("#wizard").scrollable({
+		onSeek: function(event,i){
+			$("#status li").removeClass("active").eq(i).addClass("active");
+		},
+		onBeforeSeek:function(event,i){
+			if(i==1){
+				var service_name = $("#service_name").val();
+				if(service_name==""){
+					alert("请输入集群名称！");
+					return false;
+				}
+				var scale = $("#scale").val();
+				if(scale == ""){
+					alert("请输入集群规模！");
+					return false;
+				}
+			}
+		}
+	});
+	$("#sub").click(function(){
+		var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+        	        if (xmlhttp.readyState==4) {
+	        	        alert(xmlhttp.responseText);
+				document.getElementById("ip").innerHTML=xmlhttp.responseText
+	                }
+                };
+                xmlhttp.open("POST", "/instance", true)
+                xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+		var str = '{"aid":1,"instancename":"' + document.getElementById("service_name").value + '","param":"{\\"nodes\\":' + document.getElementById("scale").value + ',\\"cpu\\":' + document.getElementById("cpu").value + ',\\"memory\\":' + document.getElementById("memory").value + '}"}'
+		alert(str)
+                xmlhttp.send(str)
+	});
+});
+</script>
+<p id="ip"/>
+</body>
+</html>

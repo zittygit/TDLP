@@ -1,0 +1,257 @@
+{% extends "home.html" %}
+
+{% block sidebar %}
+<li class="nav-item">
+    <a href="/home/" class="nav-link">
+        <i class="icon-home"></i>
+        <span class="title">App Status</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/workspace/" class="nav-link">
+        <i class="icon-notebook"></i>
+        <span class="title">Workspace</span>
+    </a>
+</li>
+<li class="nav-item start active open">
+    <a href="/images/" class="nav-link">
+        <i class="icon-picture"></i>
+        <span class="title">Image Management</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/usage/" class="nav-link">
+        <i class="icon-speedometer"></i>
+        <span class="title">System Usage</span>
+    </a>
+</li>
+
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class= "portlet light bordered">
+            <div class="portlet-title">
+                <div class = "caption">
+                    <span class="caption-subject bold font-dark">Image Management</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table table-bordered table-responsive" id="image_table">
+                    <thead>
+                    <tr>
+                        <th>Image Name</th>
+                        <th>Create Time</th>
+                        <th style="width: 600px;">Description</th>
+                        <th>Management</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if images.user_images is not None %}
+                    {% for image in images.user_images %}
+                    <tr image-name="{{ image.name }}">
+                        <td name="name">{{ image.name }}</td>
+                        <input type="hidden" name = "repo_addr" value = {{ image.repo_addr }}>
+                        <input type="hidden" name="public" value={{ image.public }}>
+                        <td>{{ image.create_time }}</td>
+                        <td name="desc">{{ image.desc }}</td>
+                        <td>
+                            <button type="button" class="btn green btn-sm" data-toggle="modal"
+                                    data-target="#image-modal" onclick="configImage(this)"
+                                    image-name="{{ image.name }}">
+                                Configure
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteImgModal(this)"
+                                    id="img_delete_btn"
+                                    image-name="{{ image.name }}"
+                                    data-toggle="modal" >
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if images.public_images is not None %}
+                    {% for image in images.public_images %}
+                    <tr>
+                        <td> {{ image.name }}</td>
+                        <input type="hidden" name = "repo_addr" value = {{ image.repo_addr }}>
+                        <td> {{ image.create_time }}</td>
+                        <td> {{ image.desc }}</td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+
+                    </tbody>
+                </table>
+
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#image-modal" onclick="addImage()">
+                        <i class="fa fa-plus fa-fw"></i> Add Docker Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="image-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Docker Image</h4>
+            </div>
+
+            <form action="/image_manage" method="post" id="image-form">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value='Add' name="action">
+                    <div class="form-group">
+                        <label for='imageName'>Image Name</label>
+                        <input name='name' type="text" class="form-control" id="imageName"
+                               placeholder="Enter image name" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="repo_addr">Image Tag</label>
+                        <input name="repo_addr" type="text" class="form-control" id="repo_addr"
+                               placeholder="Enter URL" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="repo_addr">Image Description</label>
+                        <input name="desc" type="text" class="form-control" id="desc"
+                               placeholder="Enter description">
+                    </div>
+                    <div class="form-group">
+                        <label for="is_public">Public</label>
+                        <input name="public" type="checkbox" id="is_public" value='True'>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn green" id="cre-img-btn">Create</button>
+                    <button type="submit" class="btn green" id="upd-img-btn" style="display: none;">Update</button>
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade reload-modal" id="manage-img-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="manage-img-alert" class="alert alert-info" role="alert" style="text-align: center">
+                    <strong name="message"></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imagedelete-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">Are you sure to delete this Image and data related?</div>
+            <div style="text-align:center">
+                <button type="button" class="btn btn-default btn-success" data-dismiss="modal">Cancle</button>
+                <button type="button" style="margin-left:30px" onclick="deleteImage()"
+                                     class="delete_image btn btn-default btn-danger">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        function configImage(btn) {
+            var name = $(btn).attr("image-name");
+            var row = "tr[image-name='" + name + "'] ";
+            var desc = $(row + "td[name='desc']").html();
+            var public = $(row + "input[name='public']").val();
+            var repo_addr = $(row + "input[name='repo_addr']").val();
+            $("#image-form input[name='action']").val("Update");
+            $("#image-form input[name='name']").val(name);
+            $("#image-form input[name='name']").prop('readonly', true);
+            $("#image-form input[name='name']").prop('readonly', true);
+            $("#image-form input[name='repo_addr']").val(repo_addr);
+            $("#image-form input[name='desc']").val(desc);
+            if (public == "True") {
+                $("#image-form input[name='public']").prop("checked", true);
+            }
+            else {
+                $("#image-form input[name='public']").prop("checked", false);
+            }
+            $("#cre-img-btn").hide();
+            $("#upd-img-btn").show();
+        }
+        function addImage() {
+            $("#image-form input[name='action']").val("Add");
+            $("#image-form input[name='name']").val('');
+            $("#image-form input[name='repo_addr']").val('');
+            $("#image-form input[name='desc']").val('');
+            $("#image-form input[name='public']").prop("checked", false);
+            $("#image-form input[name='name']").prop('readonly', false);
+            $("#cre-img-btn").show();
+            $("#upd-img-btn").hide();
+        }
+        var name;
+        function deleteImgModal(btn) {
+            name = $(btn).attr('image-name');
+            $('#imagedelete-modal').modal('toggle');
+        }
+
+        function deleteImage() {
+            $('#imagedelete-modal').modal('hide');
+            $.post('/image_manage', {
+                name: name,
+                action: "Delete",
+                'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()
+            }).done(function (result) {
+                if (result["status"] == "success") {
+                    $("#manage-img-modal strong[name='message']").html("Successfully delete image " + name);
+                    $("#manage-img-modal").modal();
+                } else {
+                    $("#manage-img-modal strong[name='message']").html("Fail to delete image " + name + " ,please try again later");
+                    $("#manage-img-alert").removeClass('alert-info').addClass('alert-danger');
+                    $("#manage-img-modal").modal();
+                }
+            }).fail(function () {
+                $("#manage-img-modal strong[name='message']").html("Fail to delete image " + name + " ,please try again later");
+                $("#manage-img-alert").removeClass('alert-info').addClass('alert-danger');
+                $("#manage-img-modal").modal();
+            });
+
+        }
+        $(function () {
+            $('.reload-modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
+            $("#image-form").submit(function (e) {
+                var url = $(this).attr('action');
+                $("#image-modal").modal('hide');
+                $.post(url,$(this).serialize()).done(function(result){
+                    if (result["status"] == "success") {
+                        $("#manage-img-modal strong[name='message']").html("Operation success! ");
+                        $("#manage-img-modal").modal();
+                    } else {
+                        $("#manage-img-modal strong[name='message']").html("Operation failed! Please try again");
+                        $("#manage-img-alert").removeClass('alert-info').addClass('alert-danger');
+                        $("#manage-img-modal").modal();
+                    }
+                }).fail(function(){
+
+                });
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        })
+    </script>
+{% endblock %}

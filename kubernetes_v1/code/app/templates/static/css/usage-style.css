@@ -1,0 +1,30 @@
+#system_resource .system-grafana iframe {
+  height: 140px;
+  width: 100%;
+  border: none;
+}
+#system_resource .system-grafana .element {
+  display: inline-block;
+  height: 140px;
+  width: 140px;
+  margin: 0 20px;
+}
+#system_resource .cluster-grafana iframe {
+  height: 250px;
+  width: 100%;
+  border: none;
+}
+#system_resource .cluster-grafana .tab-content {
+  display: flex;
+  flex-flow: row wrap;
+}
+#system_resource .cluster-grafana .tab-content .holds-the-iframe {
+  background: url(/static/img/Loading_icon.gif) center center no-repeat;
+  background-repeat: no-repeat;
+  -webkit-background-size: contain;
+  background-size: contain;
+  height: 250px;
+  width: 600px;
+  margin: 10px auto;
+  display: inline-block;
+}

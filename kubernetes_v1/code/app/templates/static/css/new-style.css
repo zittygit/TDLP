@@ -1,0 +1,199 @@
+.logo-login {
+    width: 130px;
+}
+
+.logo-default {
+    width: 120px;
+    margin: 12px 0 0 0!important;
+}
+
+.pace .pace-progress {
+    top: auto;
+    right: 15px;
+    bottom: 180px;
+}
+
+p {
+    margin: 0 0 10px!important;
+}
+
+.table-scrollable{
+    border: none;
+}
+
+.cpu-spark canvas, .mem-spark canvas{
+    background-color: #eee
+}
+
+.app_name_hidden, .pod_name_hidden{
+    display: none;
+}
+.nav-tabs>li{
+    margin: 0 10px!important;
+}
+.nav-tabs > li > a {
+    font-size: 16px!important;
+}
+
+#no_app_warning.hide{
+    display: none
+}
+
+/*#user_profile_form label, #new_app_form label {*/
+    /*height: 34px;*/
+    /*line-height: 34px;*/
+    /*margin: 0;*/
+/*}*/
+#user_profile_form .btn-success, #user_profile_form .btn-danger  {
+    float: right;
+}
+#user_profile_form .btn-danger {
+    margin-left: 10px;
+}
+
+.error-input {
+    border: 1px solid red;
+}
+#appdelete-modal .modal-dialog, #imagedelete-modal .modal-dialog {
+    width: 400px;
+}
+#appdelete-modal .modal-content, #imagedelete-modal .modal-content {
+    padding: 20px 0;
+}
+#appdelete-modal .modal-content .modal-body, #imagedelete-modal .modal-content .modal-body{
+    text-align: center;
+}
+#appdelete-modal button, #imagedelete-modal button {
+    width: 82px;
+}
+#appcreate-modal button {
+    width: 64px;
+}
+#image_table button {
+    width: 74px;
+}
+#workspace_content {
+    min-height: 160px;
+}
+
+/*Home app_status style*/
+#app-table, #app-table td, #app-table th,
+#allothers-app-table, #allothers-app-table td, #allothers-app-table th {
+    border: none !important;
+}
+#app-table td, #app-table th,
+#allothers-app-table td, #allothers-app-table th {
+    vertical-align: middle;
+    text-align: center;
+}
+.fixed-table-container {
+    border: none !important;
+}
+#create_model {
+    height: 22px;
+    width: 22px;
+    /*float: right;*/
+    background: url(/static/img/add.png);
+    background-size: contain;
+    border: none;
+    outline: none;
+    position: relative;
+    top: 9px;
+    left: 12px;
+}
+.delete_app {
+    background: url(/static/img/close.png);
+    background-size: contain;
+    width: 22px;
+    height: 22px;
+    border: none;
+    outline: none;
+}
+.detail_app, .detail_other {
+    background: url(/static/img/more.png);
+    background-size: contain;
+    width: 22px;
+    height: 22px;
+    border: none;
+    outline: none;
+    margin: auto;
+}
+#app_detail_form {
+    overflow: auto;
+}
+#app_detail_form .form-group{
+    margin-bottom: 0;
+}
+#app_detail_form .form-group div, #app_detail_form label {
+    height: 25px;
+    line-height: 25px;
+}
+.app_frame {
+    margin-top: 20px;
+}
+.app_frame .holds-the-iframe {
+    background:url(/static/img/Loading_icon.gif) center center no-repeat;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 350px;
+    height: 230px;
+    margin-bottom: 10px;
+}
+.app_frame iframe {
+    border: none;
+    width: 100%;
+    height: 230px;
+}
+
+/*Workspace Style*/
+.full-screen-btn {
+    /*float: right;*/
+    margin-top: 10px;
+    background-color: transparent;
+    border: none;
+    background-image: url(/static/img/full_screen7.png);
+    background-repeat: no-repeat;
+    -webkit-background-size: contain;
+    background-size: contain;
+    height: 25px;
+    width: 25px;
+    border: none;
+    outline: none;
+    z-index: 10001;
+    position: absolute;
+    right: 40px;
+    top: 65px;
+    display: none;
+}
+.full-screen-btn:hover {
+    height: 30px;
+    width: 30px;
+    -webkit-transition: height,width 0.3s;
+    -moz-transition: height,width 0.3s;
+    -ms-transition: height,width 0.3s;
+    -o-transition: height,width 0.3s;
+    transition: height,width 0.3s;
+    border: none;
+    outline: none;
+}
+.full-screen-active {
+    position: fixed;
+    right: 10px;
+    top: -9px;
+    background-image: url(/static/img/exit_full_screen7.png);
+}
+.full-screen-title {
+    margin-top: -25px;
+    border-bottom: none !important;
+}
+.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    height: 100% !important;
+}
+
+

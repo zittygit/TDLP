@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd /opt
+/usr/sbin/nslcd
+export TERM=xterm
+unset SPARK_MASTER_PORT
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/hadoop/lib/native
+sed -i "s/SPARK_MASTER/$HOSTNAME/" /opt/spark/conf/spark-defaults.conf
+/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --port 7077 --webui-port 8080 &
+gotty --port 8000 --permit-write --reconnect /bin/bash

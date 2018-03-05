@@ -1,0 +1,11 @@
+{
+  "NotebookApp": {
+    "ip": "*",
+    "port": 8080,
+    "open_browser": false,
+    "password": "sha1:3a20d60ef762:a08d08bc0e1368f6df5efd1f467927084a719512"
+  },
+  "MultiKernelManager": {
+    "default_kernel_name": "python2"
+  }
+}

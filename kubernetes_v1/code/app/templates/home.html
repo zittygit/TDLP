@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if refresh %}
+    <!--<meta http-equiv="refresh" content="30" />-->
+    {% endif %}
+    <title>Lenovo DeepNex | Dashboad</title>
+    <!-- Core CSS - Include with every page -->
+    <link href="/static/plugins/bootstrap/bootstrap.css" rel="stylesheet"/>
+    <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link href="/static/plugins/pace/pace-theme-big-counter.css" rel="stylesheet"/>
+
+
+    <link href="/static/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/assets/global/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/assets/global/css/components.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/assets/layouts/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/assets/layouts/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color"/>
+
+    <link href="/static/css/main-style.css" rel="stylesheet"/>
+    <link href="/static/css/new-style.css" rel="stylesheet"/>
+
+    {% block extrahead %}{% endblock %}
+
+    <script src="/static/plugins/jquery-1.10.2.js"></script>
+    <script src="/static/assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <script src="/static/assets/layouts/layout.js" type="text/javascript"></script>
+    <script src="/static/assets/layouts/quick-sidebar.js" type="text/javascript"></script>
+    <script src="/static/assets/global/plugins/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+    <script src="/static/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+    <script src="/static/node_modules/angular/angular.js"></script>
+
+</head>
+
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-content-white">
+<div class="page-wrapper" ng-app="app" ng-controller="mainCtrl">
+    <!-- BEGIN HEADER -->
+    <div class="page-header navbar navbar-fixed-top">
+        <!-- BEGIN HEADER INNER -->
+        <div class="page-header-inner ">
+            <!-- BEGIN LOGO -->
+            <div class="page-logo">
+                <a href="/home/">
+                    <img src="/static/img/Lenovo_logo_2015.svg.png" alt="logo" class="logo-default"/> </a>
+                <div class="menu-toggler sidebar-toggler">
+                    <span></span>
+                </div>
+            </div>
+            <!-- END LOGO -->
+            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse"
+               data-target=".navbar-collapse">
+                <span></span>
+            </a>
+            <!-- END RESPONSIVE MENU TOGGLER -->
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="dropdown dropdown-extended dropdown-tasks">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="true">
+                            <i class="icon-equalizer"></i>
+                            <span class="badge badge-default"> 4 </span>
+                        </a>
+                        <!-- dropdown tasks -->
+                        <ul class="dropdown-menu extended tasks" style="max-width: 370px; width: 370px;">
+                            <li>
+                                <div class="slimScrollDiv">
+                                    <ul class="dropdown-menu-list scroller" data-handle-color="#637283" data-initialized="1">
+                                        <li>
+                                            <a href="#">
+                                                <div>
+                                                    <p>
+                                                        <strong>CPU Resource</strong>
+                                                        <span class="pull-right text-muted">Used: {{ usage.usage.cpu }} / Allocatable: {{ usage.capacity.cpu }}</span>
+                                                    </p>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-success" role="progressbar"
+                                                             aria-valuenow="{{ usage.usage.cpu }}" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width: {{usage.percent.cpu}}%">
+                                                            <span class="sr-only">{{ usage.usage.cpu }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div>
+                                                    <p>
+                                                        <strong>GPU Resource</strong>
+                                                        <span class="pull-right text-muted">Used: {{ usage.usage.gpu }} / Allocatable: {{ usage.capacity.gpu }}</span>
+                                                    </p>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ usage.usage.gpu }}"
+                                                             aria-valuemin="0" aria-valuemax="{{usage.capacity.gpu}}" style="width: {{ usage.percent.gpu }}%">
+                                                            <span class="sr-only">{{ usage.usage.gpu }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div>
+                                                    <p>
+                                                        <strong>Memory Resource</strong>
+                                                        <span class="pull-right text-muted">Used: {{ usage.strData.mem_usage }} / Allocatable: {{ usage.strData.mem_capacity}}</span>
+                                                    </p>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ usage.usage.mem }}"
+                                                             aria-valuemin="0" aria-valuemax="{{usage.capacity.mem}}" style="width: {{ usage.percent.mem }}%">
+                                                            <span class="sr-only">{{ usage.usage.mem }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div>
+                                                    <p>
+                                                        <strong>Disk Resource</strong>
+                                                        <span class="pull-right text-muted">Used: {{ usage.strData.disk_usage }} / Allocatable: {{ usage.strData.disk_capacity }}</span>
+                                                    </p>
+                                                    <div class="progress progress-striped active">
+                                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ usage.usage.disk }}"
+                                                             aria-valuemin="0" aria-valuemax="{{usage.capacity.disk}}" style="width: {{ usage.percent.disk }}%">
+                                                            <span class="sr-only">{{ usage.usage.disk }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <!-- end dropdown-tasks -->
+                    </li>
+
+                    <li class="dropdown dropdown-user">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                           data-close-others="true">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            <span class="username username-hide-on-mobile">  {{ user.username }} </span>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li>
+                                <a href="#userprofile-modal" data-toggle="modal">
+                                    <i class="icon-user"></i> My Profile </a>
+                            </li>
+                            {% if user.is_superuser %}
+                            <li>
+                                <a href="/admin/">
+                                    <i class="icon-settings"></i> User Management </a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a href="/logout/">
+                                    <i class="icon-logout"></i> Log Out </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- END USER LOGIN DROPDOWN -->
+
+                </ul>
+            </div>
+            <!-- END TOP NAVIGATION MENU -->
+        </div>
+    </div>
+    <!-- END HEADER -->
+    <!-- BEGIN HEADER & CONTENT DIVIDER -->
+    <div class="clearfix"></div>
+    <!-- END HEADER & CONTENT DIVIDER -->
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+        <!-- BEGIN SIDEBAR -->
+        <div class="page-sidebar-wrapper">
+            <!-- BEGIN SIDEBAR -->
+            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+            <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+            <div class="page-sidebar navbar-collapse collapse">
+                <!-- BEGIN SIDEBAR MENU -->
+                <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+                <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+                <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+                <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+                <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+                <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true"
+                    data-slide-speed="200">
+                    <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                    <li class="sidebar-toggler-wrapper hide">
+                        <div class="sidebar-toggler">
+                            <span></span>
+                        </div>
+                    </li>
+                    <!-- END SIDEBAR TOGGLER BUTTON -->
+                    <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+
+                    {% block sidebar %}
+                    <li class="nav-item start active open">
+                        <a href="/home/" class="nav-link">
+                            <i class="icon-home"></i>
+                            <span class="title">App Status</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/workspace/" class="nav-link">
+                            <i class="icon-notebook"></i>
+                            <span class="title">Workspace</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/images/" class="nav-link">
+                            <i class="icon-picture"></i>
+                            <span class="title">Image Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/usage/" class="nav-link">
+                            <i class="icon-speedometer"></i>
+                            <span class="title">System Usage</span>
+                        </a>
+                    </li>
+                    {% endblock %}
+                </ul>
+                <!-- END SIDEBAR MENU -->
+                <!-- END SIDEBAR MENU -->
+            </div>
+            <!-- END SIDEBAR -->
+        </div>
+        <!-- END SIDEBAR -->
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <!-- BEGIN CONTENT BODY -->
+            <div class="page-content">
+                <!-- BEGIN PAGE HEADER-->
+                <!-- BEGIN PAGE BAR -->
+
+                {% block content %}
+                <div class="row">
+                    <!-- Welcome -->
+                    <div class="col-lg-12">
+                        <div class="alert alert-info alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                            <i class="fa fa-folder-open"></i><b>&nbsp;Hello! </b>Welcome Back
+                            <strong>
+                                {% if user.first_name %}
+                                {{ user.first_name }}
+                                {% else %}
+                                {{ user.username }}
+                                {% endif %}
+                            </strong>.
+                        </div>
+                    </div>
+                    <!--end  Welcome -->
+                </div>
+
+                <div class="portlet light"  id = "app_status">
+                    <div class="portlet-title">
+                        <div class = "caption">
+                            <span class="caption-subject bold font-dark">My Apps</span>
+                        </div>
+                        <!--<input title="Create App" id="create_model" data-toggle="modal" data-target="#appcreate-modal" type="button">-->
+                    </div>
+                    <div class="portlet-body">
+                        {% csrf_token %}
+                        <div id= "no_app_warning" class="alert alert-warning hide">
+                            Please create new apps to start.
+                        </div>
+                        <div class="table">
+                            <table class = "table" id="app-table" data-search="false" data-show-columns="false" data-pagination="false">
+                                <thead>
+                                <tr>
+                                    <th data-field="status"></th>
+                                    <th data-field="app_name" class="app_name">App Name</th>
+                                    <th data-field="app_name_hidden" class="app_name_hidden">App Name</th>
+                                    <th data-field="pod_name_hidden" data-width="20px" class="pod_name_hidden">Pod Name</th>
+                                    <!--<th data-field="pod_ip">App IP</th>-->
+                                    <th data-field="gpu_mode">GPU Mode</th>
+                                    <th data-field="gpu" data-width="10px">No. of GPU</th>
+                                    <th data-field="cpu">No. of CPU</th>
+                                    <th class = "cpu-spark all" data-field="cpu_usage">CPU Usage (cores)
+                                    <th data-field="mem">Max Memory</th>
+                                    <th class = "mem-spark all" data-field="mem_usage">Memory Usage</th>
+                                    <!--<th data-field="age">Age</th>-->
+                                    <th data-field="manage"></th>
+                                    <th data-field="detail"></th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        <a  data-toggle="modal" data-target="#appcreate-modal" type="button" class="btn btn-success">
+                            <i class="fa fa-plus fa-fw"></i>New App
+                        </a>
+                    </div>
+                </div>
+
+                {% if user.is_superuser %}
+                <div class="portlet light"  id = "allothers_app_status">
+                    <div class="portlet-title">
+                        <div class = "caption">
+                            <span class="caption-subject bold font-dark">All Other Apps</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        {% csrf_token %}
+                        <div class="table">
+                            <table class = "table" id="allothers-app-table" data-search="false" data-show-columns="false" data-pagination="false">
+                                <thead>
+                                <tr>
+                                    <th data-field="status"></th>
+                                    <th data-field="app_name" class="app_name">App Name</th>
+                                    <!--<th data-field="pod_ip">App IP</th>-->
+                                    <th data-field="gpu_mode">GPU Mode</th>
+                                    <th data-field="gpu" data-width="10px">No. of GPU</th>
+                                    <th data-field="cpu">No. of CPU</th>
+                                    <th class = "cpu-spark allothers" data-field="cpu_usage">CPU Usage (cores)
+                                    <th data-field="mem">Max Memory</th>
+                                    <th class = "mem-spark allothers" data-field="mem_usage">Memory Usage</th>
+                                    <!--<th data-field="age">Age</th>-->
+                                    <th data-field="username">User</th>
+                                    <th data-field="detail"></th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="modal fade" id="appcreate-modal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Create App</h4>
+                            </div>
+                            <form id = "new_app_form" role="form" data-toggle="validator" class="form-horizontal">
+                                <div class="modal-body">
+                                    {% csrf_token %}
+                                    {% if message %}
+                                    <div class="alert alert-danger">
+                                        {{ message }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="appname">App Name</label>
+                                        <div class="col-xs-9">
+                                            <input type="text" class="form-control" id="appname" name="appname"
+                                                   placeholder="Please enter the application name" required>
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    {% comment %}
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="token">App Token (optional)</label>
+                                        <div class="col-xs-9">
+                                            <input type="text" class="form-control" id="token" name="token"
+                                                   placeholder="You can use a token to encrypt your application">
+                                        </div>
+                                    </div>
+                                    {% endcomment %}
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="image">App Image</label>
+                                        <div class="col-xs-9">
+                                            <select class="form-control" id="image" name="image">
+                                                {% for image in images.user_images %}
+                                                <option value="{{ image.name }}">{{ image.name }}</option>
+                                                {% endfor %}
+                                                {% for image in images.public_images %}
+                                                <option value="{{ image.name }}">{{ image.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="gpu_mode">GPU mode</label>
+                                        <div class="col-xs-9">
+                                            <select class="form-control" id="gpu_mode" name="gpu_mode">
+                                                <option value="0">Shared</option>
+                                                <option value="1" selected>Dedicated</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="gpu">No. of GPU</label>
+                                        <div class="col-xs-9">
+                                            <input type="number" class="form-control" id="gpu" name="gpu" min="0" max="{{gpu}}" value="{{gpu}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="cpu">No. of CPU</label>
+                                        <div class="col-xs-9">
+                                            <input type="number" class="form-control" id="cpu" name="cpu" min="1" max="{{cpu}}" value="{{cpu}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="mem">Max Memory (MB)</label>
+                                        <div class="col-xs-9">
+                                            <input type="number" class="form-control" id="mem" name="mem"  max="{{mem}}" value="{{mem}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-3 col-form-label control-label" for="status">App Status</label>
+                                        <div class="col-xs-9">
+                                            <input type="text" class="form-control" id="status" name="status" value="New" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn green create_app btn-success">Create</button>
+                                        <button type="button" class="btn btn-danger cancel_btn" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal fade" id="appdelete-modal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">Are you sure to delete this App and data related?</div>
+                            <div style="text-align:center">
+                                <button type="button" class="btn btn-default btn-success" data-dismiss="modal">Cancle</button>
+                                <button type="button" style="margin-left:30px" class="delete_app2 btn btn-default btn-danger">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="appdetail-modal" role="dialog">
+                    <div class="modal-dialog" style="width: 800px">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" style="display: inline-block">More Status</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: relative; top: 7px"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="portlet light">
+                                    <div class="portlet-body">
+                                        <form id="app_detail_form">
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">App Name</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.app_name"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">IP Address</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.pod_ip"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">NO. of GPU</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.gpu"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">NO. of CPU</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.cpu"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">GPU Mode</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.gpu_mode"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">Max Memory</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.mem"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">Age</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.age"></div>
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label class="col-xs-5 bold">Image Name</label>
+                                                <div class="col-xs-7" ng-bind="single_app_info.image"></div>
+                                            </div>
+                                        </form>
+                                        <div class="app_frame">
+                                            <div class="holds-the-iframe"><iframe id="app_cpu"></iframe></div>
+                                            <div class="holds-the-iframe"><iframe id="app_mem"></iframe></div>
+                                            <div class="holds-the-iframe"><iframe id="app_net"></iframe></div>
+                                            <div class="holds-the-iframe"><iframe id="app_file"></iframe></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endblock %}
+                <div class="modal fade" id="userprofile-modal" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title caption-subject bold uppercase font-dark">My Profile</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+
+                                    {% if message %}
+                                    <div class="col-lg-12">
+                                        {% if status %}
+                                        <div class="alert alert-success">
+                                            {{ message }}
+                                        </div>
+                                        {% else %}
+                                        <div class="alert alert-danger">
+                                            {{ message }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-lg-12">
+                                        <div class="portlet light">
+                                            <div class="portlet-body">
+                                                <form id="user_profile_form" data-toggle="validator" class="form-horizontal">
+                                                    {% csrf_token %}
+                                                    <div class="form-group">
+                                                        <label for="username" class="col-xs-4 col-form-label control-label">User Name</label>
+                                                        <div class="col-xs-8">
+                                                            <div class="form-control-static" id="username" name="username">{{ user.username }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="first_name" class="col-xs-4 col-form-label control-label">First Name</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="text" value="{{ user.first_name }}" id="first_name"
+                                                                   placeholder="Enter your first name" name="first_name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="last_name" class="col-xs-4 col-form-label control-label">Last Name</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="text" value="{{ user.last_name }}" id="last_name"
+                                                                   placeholder="Enter your last name" name="last_name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="email" class="col-xs-4 col-form-label control-label">Email Address</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="email" value="{{ user.email }}" id="email"
+                                                                   placeholder="Enter your E-mail"  data-error="Whoops, that email address is invalid" name="email">
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="new_password" class="col-xs-4 col-form-label control-label">New Password</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="password" id="new_password"
+                                                                   placeholder="Enter your new password" name="new_password">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="new_password_confirm" class="col-xs-4 col-form-label control-label">Confirm New Password</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="password" id="new_password_confirm"
+                                                                   name="new_password_confirm" data-match="#new_password"
+                                                                   placeholder="Enter your new password again"
+                                                                   data-match-error="Whoops, these don't match">
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="current_password" class="col-xs-4 col-form-label control-label">Current Password</label>
+                                                        <div class="col-xs-8">
+                                                            <input class="form-control" type="password" id="current_password" name="current_password"
+                                                                   placeholder="Enter your current password" required>
+                                                        </div>
+                                                    </div>
+                                                    <div style="margin-top:40px" >
+                                                        <button type="button" class="btn btn-primary btn-danger cancel_profile" data-dismiss="modal">Cancle</button>
+                                                        <button type="button" class="btn btn-primary btn-success user_profile">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END CONTENT BODY -->
+        </div>
+        <!-- END CONTENT -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div class="page-footer">
+        <div class="page-footer-inner"> 2017 &copy; DeepNex By
+            <a href="#">Lenovo</a>
+        </div>
+        <div class="scroll-to-top">
+            <i class="icon-arrow-up"></i>
+        </div>
+    </div>
+    <!-- END FOOTER -->
+</div>
+
+<!--Core Scripts - Include with every page -->
+<script src="/static/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="/static/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/static/plugins/pace/pace.js"></script>
+<script src="/static/scripts/loader.js"></script>
+<script src="/static/scripts/siminta.js"></script>
+<script src="/static/assets/global/scripts/bootstrap-notify.min.js" type="text/javascript"></script>
+
+
+<!--<script src="/static/scripts/visualization.js" type="text/javascript"></script>-->
+<script src="/static/scripts/mainCtrl.js" type="text/javascript"></script>
+<script src="/static/node_modules/bootstrap-validator/js/validator.js"></script>
+</body>
+
+</html>

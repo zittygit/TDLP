@@ -1,0 +1,58 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: zzymaster
+  namespace: zhang
+spec:
+  type: NodePort
+  ports:
+    - port: 9000
+      name: hdfs
+    - port: 19888
+      name: jobhistory
+    - port: 50010
+      name: hdfs2
+    - port: 50020
+      name: hdfs3
+    - port: 50075
+      name: hdfs5
+    - port: 50090
+      name: hdfs6
+    - port: 10020
+      name: mapred2
+    - port: 8030
+      name: yarn1
+    - port: 8031
+      name: yarn2
+    - port: 8032
+      name: yarn3
+    - port: 8033
+      name: yarn4
+    - port: 8040
+      name: yarn5
+    - port: 8042
+      name: yarn6
+    - port: 49707
+      name: other1
+    - port: 2122
+      name: other2
+    - port: 31010
+      name: hdfs7
+    - port: 8020
+      name: hdfs8
+    - name: terminal
+      port: 8000
+      nodePort: 31001
+    - name: cluster
+      port: 8088
+      nodePort: 31002
+    - name: information
+      port: 50070
+      nodePort: 31003
+    - name: register
+      port: 3333
+      targetPort: 3333
+  selector:
+    component: hadoop-master
+
+    

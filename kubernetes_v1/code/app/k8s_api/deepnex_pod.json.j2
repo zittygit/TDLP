@@ -1,0 +1,107 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "{{ params['pod_name'] }}",
+    "labels": {
+      "app": "{{ params['pod_name'] }}",
+      "username": "{{ params['user_name'] }}"
+    }
+  },
+  "spec": {
+    "containers": [
+      {
+        "name": "tensorflow",
+        "image": "{{ params['image_tag'] }}",
+        "env": [
+          {
+            "name": "WEB_HOST_ENDPOINT",
+            "value": "{{ params['web_host_endpoint'] }}"
+          }{% if params.user_password %},
+          {
+            "name": "PASSWORD",
+            "value": "{{ params['user_password'] }}"
+          }{% elif params.token %},
+          {
+            "name": "TOKEN",
+            "value": "{{ params['token'] }}"
+          }{% endif %},
+          {
+            "name": "GPU",
+            "value": "{{ params['gpu'] }}"
+          }{% if params.appid %},
+          {
+            "name": "APPID",
+            "value": "{{ params['appid'] }}"
+          }{% endif %}{% if params.applist %},
+          {
+            "name": "APPLIST",
+            "value": "{{ params['applist'] }}"
+          }{% endif %}
+        ],
+        "ports": [
+          {
+            "containerPort": 8888
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "{{ params['cpu'] }}",
+            "memory": "{{ params['mem'] }}Mi"
+          }{% if params['gpu'] %},
+          "limits": {
+            "alpha.kubernetes.io/nvidia-gpu": "{{ params['gpu'] }}"
+          }{% endif %}
+        },
+        "volumeMounts": [
+          {
+            "name": "nvidia-libs-volume",
+            "mountPath": "/usr/local/nvidia",
+            "readOnly": true
+          },
+          {
+            "name": "user-data-volume",
+            "mountPath": "/mnt/data"
+          },
+          {
+            "name": "gpu-usage",
+            "mountPath": "/dev/deepnex/gpu"
+          }{% if params['public_data_dir'] %},
+          {
+            "name": "public-data-volume",
+            "mountPath": "/mnt/public"
+          }{% endif %}
+        ],
+        "securityContext": {
+          "privileged": true
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "name": "nvidia-libs-volume",
+        "hostPath": {
+          "path": "{{ params['nvidia_driver'] }}"
+        }
+      },
+      {
+        "name": "user-data-volume",
+        "hostPath": {
+          "path": "{{ params['user_data_dir'] }}"
+        }
+      },
+      {
+        "name": "gpu-usage",
+        "hostPath": {
+          "path": "/var/deepnex/gpu"
+        }
+      }{% if params['public_data_dir'] %},
+      {
+        "name": "public-data-volume",
+        "hostPath": {
+          "path": "{{ params['public_data_dir'] }}"
+        }
+      }{% endif %}
+    ]
+  }
+}

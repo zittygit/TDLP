@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"/>
+		<title>User Login</title>
+		<script>
+			function postUserInfo() {
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						alert(xmlhttp.responseText);
+					}
+				};
+				xmlhttp.open("POST", "/auth", true)
+				xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+				xmlhttp.send('{"userName":"'+document.getElementById("userName").value+'","passWord":"' + document.getElementById("passWord").value+'"}');
+			}
+			function deleteUserInfo() {
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						alert(xmlhttp.responseText);
+					}
+				};
+				xmlhttp.open("DELETE", "/logout", true)
+				xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+				xmlhttp.send();
+			}
+		</script>
+	</head>
+	<body>
+		<img src="/img/logo.png">
+		<p>
+			username:<input type="text" name="userName" id="userName" style="width:100px"><p/>
+			password:<input type="password" name="passWord" id="passWord" style="width:100px"><p/>
+			<input type="button" value="login" onClick="postUserInfo()">
+			<input type="button" value="logout" onClick="deleteUserInfo()">
+		</p>
+	</body>
+</html>

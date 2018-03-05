@@ -1,0 +1,14 @@
+FROM nscc/spark:2.1.0-base
+
+MAINTAINER guixin.guo@nscc-gz.cn
+
+COPY zeppelin-0.7.2-bin-all.tgz /opt/
+
+RUN cd /opt && tar -xf zeppelin-0.7.2-bin-all.tgz && mv zeppelin-0.7.2-bin-all zeppelin && rm -f zeppelin-0.7.2-bin-all.tgz && echo Zeppelin 0.7.2 installed in /opt/zeppelin
+
+ADD shiro.ini /opt/zeppelin/conf/shiro.ini
+ADD zeppelin-log4j.properties /opt/zeppelin/conf/log4j.properties
+ADD zeppelin-env.sh /opt/zeppelin/conf/zeppelin-env.sh
+ADD zeppelin.sh /opt/zeppelin.sh
+
+RUN chmod -R 777 /opt/zeppelin

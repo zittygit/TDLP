@@ -1,0 +1,129 @@
+{% extends "home.html" %}
+
+{% block extrahead %}
+<link href="/static/css/usage-style.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block sidebar %}
+<li class="nav-item">
+    <a href="/home/" class="nav-link">
+        <i class="icon-home"></i>
+        <span class="title">App Status</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/workspace/" class="nav-link">
+        <i class="icon-notebook"></i>
+        <span class="title">Workspace</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/images/" class="nav-link">
+        <i class="icon-picture"></i>
+        <span class="title">Image Management</span>
+    </a>
+</li>
+<li class="nav-item start active open">
+    <a href="/usage/" class="nav-link">
+        <i class="icon-speedometer"></i>
+        <span class="title">System Usage</span>
+        <span class="selected"></span>
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+
+<div class = "row" id = "system_resource">
+    <div class="col-lg-12 col-xs-12 col-sm-12">
+        <div class="portlet light system-grafana ">
+            <div class="portlet-title">
+                <div class = "caption">
+                    <span class="caption-subject bold font-dark">Overview</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="element">
+                    <iframe id = "cpu_usage" scrolling = "no"></iframe>
+                </div>
+                <div class="element">
+                    <iframe id="mem_usage" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet light cluster-grafana">
+            <div class="portlet-title tabbable-line">
+                <!--<div class="caption">-->
+                <ul class="nav nav-tabs pull-left" id = "toggleNode">
+                    <li class="active">
+                        <a data-toggle="tab" aria-expanded="true" id="overall"
+                           class="caption-subject bold font-dark"> Overall </a>
+                    </li>
+                    {% for id in nodes_list %}
+                    <li class="">
+                        <a data-toggle="tab" aria-expanded="false"
+                           class="caption-subject bold font-dark" id="{{ node_prefix}}{{ id }}"> DeepNex{{ id }} </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <!--</div>-->
+                <div class="actions">
+                    <div class="btn-group btn-group-devided">
+                        <a id = "time-vis" class="btn blue btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
+                            <i class="fa fa-clock-o"></i>
+                            Last 1 hour
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu" id = "toggleTime">
+                            <li>
+                                <a href="javascript:;" id = "5min">Last 5 mins</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" id = "30min">Last 30 mins</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" id = "1hour">Last 1 hour</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" id = "3hour">Last 3 hour</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" id = "12hour">Last 12 hour</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" id = "sofar">Today so far</a>
+                            </li>
+                        </ul>
+
+                        <a id = "refresh-vis" class="btn blue btn-circle btn-sm" title = "Refresh" href="javascript:;">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                    <div class="holds-the-iframe">
+                        <iframe id = "cpu" scrolling = "no"></iframe>
+                    </div>
+                    <div class="holds-the-iframe">
+                        <iframe id = "mem" scrolling = "no"></iframe>
+                    </div>
+                    <div class="holds-the-iframe">
+                        <iframe id = "net" scrolling = "no"></iframe>
+                    </div>
+                    <div class="holds-the-iframe">
+                        <iframe id="file" scrolling = "no"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

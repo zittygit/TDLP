@@ -1,0 +1,21 @@
+FROM nscc/nss-pam-ldapd:0.8.13
+
+MAINTAINER guixin.guo@nscc-gz.cn
+
+COPY jdk1.8.0_112.rpm hadoop-2.7.3.tar.gz spark-2.1.0-bin-hadoop2.7.tar /opt/
+
+RUN cd /opt && rpm -ivh jdk1.8.0_112.rpm && rm -f jdk1.8.0_112.rpm && echo java jdk 1.8.0 installed
+
+ENV JAVA_HOME /usr/java/jdk1.8.0_112
+
+RUN cd /opt && tar -xf hadoop-2.7.3.tar.gz hadoop-2.7.3/lib/native && mv hadoop-2.7.3 hadoop && rm -f hadoop-2.7.3.tar.gz && echo Hadoop 2.7.3 native library installed in /opt/hadoop/lib/native
+
+RUN cd /opt && tar -xf spark-2.1.0-bin-hadoop2.7.tar && mv spark-2.1.0-bin-hadoop2.7 spark && rm -f spark-2.1.0-bin-hadoop2.7.tar && mkdir -p /opt/spark/work && chmod 777 /opt/spark/work && echo spark 2.1.0 installed in /opt/spark
+
+ENV PATH $PATH:/opt/spark/bin 
+
+ADD log4j.properties /opt/spark/conf/log4j.properties
+ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
+ADD gotty /bin/gotty
+
+RUN chmod -R 777 /opt/spark

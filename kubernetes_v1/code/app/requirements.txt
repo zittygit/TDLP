@@ -1,0 +1,4 @@
+django
+requests
+jinja2
+sshtunnel

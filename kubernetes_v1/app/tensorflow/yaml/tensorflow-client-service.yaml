@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-tensorflow-client
+  namespace: test
+spec:
+  type: NodePort
+  ports:
+    - name: server
+      port: 3333
+      nodePort: 30000
+      targetPort: 3333
+    - name: ssh
+      port: 8000
+      nodePort: 30001
+      targetPort: 8000
+    - name: jupyter
+      port: 8080
+      nodePort: 30002
+      targetPort: 8080
+    - name: tenserboard
+      port: 8888
+      nodePort: 30003
+      targetPort: 8888
+  selector:
+          component: test-tensorflow-client

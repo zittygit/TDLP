@@ -1,0 +1,28 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: test-spark-master
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    component: test-spark-master
+  template:
+    metadata:
+      labels:
+        component: test-spark-master
+    spec:
+      securityContext:
+        runAsUser: 1003
+      containers:
+        - name: test-spark-master
+          image: nscc/spark:2.1.0
+          command: ["/start-master"]
+          ports:
+            - containerPort: 7077
+            - containerPort: 8000
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi

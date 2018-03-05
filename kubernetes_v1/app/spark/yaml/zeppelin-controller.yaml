@@ -1,0 +1,26 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: test-zeppelin
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    component: test-zeppelin
+  template:
+    metadata:
+      labels:
+        component: test-zeppelin
+    spec:
+      securityContext:
+        runAsUser: 1003
+      containers:
+        - name: zeppelin
+          image: nscc/zeppelin:0.7.2
+          command: ["/opt/zeppelin.sh", "test-spark-master"]
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi

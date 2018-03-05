@@ -1,0 +1,28 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: test-tensorflow
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    component: test-tensorflow
+  template:
+    metadata:
+      labels:
+        component: test-tensorflow
+    spec:
+      securityContext:
+        runAsUser: 1003
+      containers:
+        - name: test-tensorflow
+          image: nscc/tensorflow:1.3.0-cpu
+          command: ["/tensorflow.sh"]
+          ports:
+            - containerPort: 8000
+            - containerPort: 8080
+            - containerPort: 8888
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi

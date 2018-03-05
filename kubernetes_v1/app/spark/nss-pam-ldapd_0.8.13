@@ -1,0 +1,8 @@
+FROM centos:7.3.1611
+
+MAINTAINER guixin.guo@nscc-gz.cn
+
+RUN yum install -y vim nss-pam-ldapd net-tools && chmod u+s /usr/sbin/nslcd
+
+COPY profile nslcd.conf nsswitch.conf /etc/
+COPY password-auth system-auth /etc/pam.d/

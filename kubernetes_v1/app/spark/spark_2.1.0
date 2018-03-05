@@ -1,0 +1,5 @@
+FROM nscc/spark:2.1.0-base
+
+MAINTAINER guixin.guo@nscc-gz.cn
+
+ADD start-master start-worker /

@@ -1,0 +1,26 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: test-spark-worker
+  namespace: test
+spec:
+  replicas: 2
+  selector:
+    component: test-spark-worker
+  template:
+    metadata:
+      labels:
+        component: test-spark-worker
+    spec:
+      securityContext:
+        runAsUser: 1003
+      containers:
+        - name: test-spark-worker
+          image: nscc/spark:2.1.0
+          command: ["/start-worker", "test-spark-master"]
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi

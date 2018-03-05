@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-zeppelin
+  namespace: test
+spec:
+  ports:
+    - name: terminal
+      port: 8000
+      targetPort: 8000
+    - name: web
+      port: 8080
+      targetPort: 8080
+  selector:
+    component: test-zeppelin

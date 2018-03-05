@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"/>
+		<title>User Manage</title>
+		<script>
+			function createUser() {
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						alert(xmlhttp.responseText);
+					}
+				};
+				xmlhttp.open("POST", "/user", true)
+				xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+				xmlhttp.send('{"userName":"'+document.getElementById("userName").value+'","passWord":"' + document.getElementById("passWord").value+'"}');
+			}
+			function queryUser() {
+                                var xmlhttp=new XMLHttpRequest();
+                                xmlhttp.onreadystatechange=function() {
+                                        if (xmlhttp.readyState==4) {
+                                                alert(xmlhttp.responseText);
+                                        }
+                                };
+                                xmlhttp.open("GET", "/user", true)
+				xmlhttp.setRequestHeader('If-Modified-Since', '0');
+                                xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+                                xmlhttp.send();
+                        }
+			function deleteUser() {
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						alert(xmlhttp.responseText);
+					}
+				};
+				xmlhttp.open("DELETE", "/user", true)
+				xmlhttp.setRequestHeader("Content-type","application/json;charset=utf-8")
+				xmlhttp.send('{"userName":"'+document.getElementById("userName").value+'"}');
+			}
+		</script>
+	</head>
+	<body>
+		<img src="/img/logo.png">
+		<p>
+			username:<input type="text" name="userName" id="userName" style="width:100px"><p/>
+			password:<input type="password" name="passWord" id="passWord" style="width:100px"><p/>
+			<input type="button" value="create" onClick="createUser()">
+			<input type="button" value="query" onClick="queryUser()">
+			<input type="button" value="delete" onClick="deleteUser()">
+		</p>
+	</body>
+</html>

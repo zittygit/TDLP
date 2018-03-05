@@ -1,0 +1,36 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: test-tensorflow-client
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    component: test-tensorflow-client
+  template:
+    metadata:
+      labels:
+        component: test-tensorflow-client
+    spec:
+      securityContext:
+        runAsUser: 1003
+      containers:
+        - name: test-tensorflow-client
+          image: nscc/tensorflow:1.3.0-cpu-cluster
+          command: ["/tensorflow-client.sh", "2", "2"]
+          ports:
+            - containerPort: 3333
+            - containerPort: 8000
+            - containerPort: 8080
+            - containerPort: 8888
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /tensorflow
+              name: test-tersorflow
+      volumes:
+      - name: test-tersorflow
+        hostPath:
+          path: /root/tensorflow

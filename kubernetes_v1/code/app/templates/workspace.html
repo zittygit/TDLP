@@ -1,0 +1,119 @@
+{% extends "home.html" %}
+
+
+<!--{% block page-bar %}-->
+<!-- BEGIN PAGE TITLE-->
+    <!--<ul class="nav nav-tabs">-->
+        <!--{% csrf_token %}-->
+        <!--{% for workspace in apps %}-->
+        <!--{% if workspace.name == app.name %}-->
+        <!--<li class = "active">-->
+            <!--<a class="workspace_tab">-->
+                <!--<h1 class="page-title" style="margin:0" id = "{{workspace.pod_name}}">{{workspace.name}}</h1>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--{% else %}-->
+        <!--<li><a class = "workspace_tab" id = "{{workspace.pod_name}}">-->
+            <!--<h1 class="page-title" style="margin:0" id = "{{workspace.pod_name}}">{{workspace.name}}</h1>-->
+        <!--</a></li>-->
+        <!--{% endif %}-->
+        <!--{% endfor %}-->
+<!--</ul>-->
+<!--{% endblock %}-->
+
+
+{% block sidebar %}
+<li class="nav-item">
+    <a href="/home/" class="nav-link">
+        <i class="icon-home"></i>
+        <span class="title">App Status</span>
+    </a>
+</li>
+<li class="nav-item start active open">
+    <a href="/workspace/" class="nav-link">
+        <i class="icon-notebook"></i>
+        <span class="title">Workspace</span>
+        <span class="selected"></span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/images/" class="nav-link">
+        <i class="icon-picture"></i>
+        <span class="title">Image Management</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/usage/" class="nav-link">
+        <i class="icon-speedometer"></i>
+        <span class="title">System Usage</span>
+    </a>
+</li>
+
+{% endblock %}
+
+{% block content %}
+<div class = "row">
+    <div class="col-lg-12 col-xs-12 col-sm-12">
+        <div class="portlet light" id="workspace_content">
+            <div class="portlet-title tabbable-line" id="workspace-tab">
+                <ul class="nav nav-tabs pull-left" id="app-tab">
+                    {% csrf_token %}
+                    {% for workspace in apps %}
+                    {% if workspace.name == app.name %}
+                    <li class = "active">
+                        <a class="workspace_tab">
+                            <span style="margin:0" class="caption-subject bold font-dark"
+                                  id = "{{workspace.pod_name}}">{{workspace.name}}</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li><a class = "workspace_tab" id = "{{workspace.pod_name}}">
+                        <span style="margin:0" class="caption-subject bold font-dark"
+                              id = "{{workspace.pod_name}}">{{workspace.name}}</span>
+                    </a></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                <input type="button" title='Full Screen' class="full-screen-btn">
+            </div>
+            <div class="portlet-body">
+
+                {% if not app %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-folder-open"></i><b> No available app.</b>
+                        </div>
+                    </div>
+                </div>
+                {% elif app.status != "Running" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info">
+                            <i class="fa fa-folder-open"></i><b> The app is not ready to use or the app image is invalid.</b>
+                        </div>
+                    </div>
+                </div>
+                {% elif app %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <iframe id="workspace" src="{{ app_url }}"></iframe>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info">
+                            <i class="fa fa-folder-open"></i><b> Please select a app or create one.</b>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+mysql -uroot -phpc-admin -e "drop user kubernetes"
+mysql -uroot -phpc-admin -e "drop database kubernetes"
+mysql -uroot -phpc-admin -e "create user 'kubernetes'@'%' identified by 'kubernetes'"
+mysql -uroot -phpc-admin -e "create database kubernetes"
+mysql -uroot -phpc-admin -e "grant all on kubernetes.* to 'kubernetes'@'%'"
+mysql -ukubernetes -pkubernetes kubernetes < createTable.sql
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into usergroup value(1001, 'guoguixin')"
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into user(uid, username, gid, role, email, createtime) value(1001, 'guoguixin', 1001, 'admin', 'guixin.guo@nscc-gz.cn', now())"
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into app(appname, path, info) value('spark', 'bin/spark', 'Spark (tools for bigdata processing)')"
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into app(appname, path, info) value('zeppelin', 'bin/zeppelin', 'Zeppelin (web frontend for spark)')"
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into app(appname, path, info) value('tensorflow_cpu', 'bin/tensorflow-cpu', 'cpu version of tensorflow')"
+mysql -ukubernetes -pkubernetes kubernetes -e "insert into app(appname, path, info) value('tensorflow_cpu_cluster', 'bin/tensorflow-cpu-cluster', 'cpu cluster version of tensorflow')"

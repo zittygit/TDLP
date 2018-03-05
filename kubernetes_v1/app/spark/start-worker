@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cd /opt
+/usr/sbin/nslcd
+unset SPARK_MASTER_PORT
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/hadoop/lib/native
+
+sed -i "s/SPARK_MASTER/$1/" /opt/spark/conf/spark-defaults.conf
+
+if ! getent hosts $1
+then
+    echo "Spark master service not created yet, will sleep 10 seconds and exit"
+    sleep 10
+    exit 0
+fi
+
+/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://$1:7077 --webui-port 8081

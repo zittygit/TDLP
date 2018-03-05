@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-tensorflow
+  namespace: test
+spec:
+  ports:
+    - name: ssh
+      nodePort: 8000
+      targetPort: 8000
+    - name: jupyter
+      nodePort: 8080
+      targetPort: 8080
+    - name: tenserboard
+      nodePort: 8888
+      targetPort: 8888
+  selector:
+    component: test-tensorflow
